@@ -241,4 +241,115 @@ describe('String methods', function () {
 			expect(doit).to.throw('regex not found within target string: /not/g');
 		});
 	});
+
+	method = 'search';
+	describe(method + '()', function () {
+		var fn = '' + method;
+
+		it('should answer with position of string', function () {
+			expect(s[fn]('exceptional', /CEP/i)).to.be.equal(2);
+		});
+
+		it('should throw exception if not found in string', function () {
+			var doit = function () {
+				s[fn]('exceptional', /not/i);
+			};
+
+			expect(doit).to.throw(RangeError);
+			expect(doit).to.throw('regex not found within target string: /not/i');
+		});
+	});
+
+	method = 'slice';
+	describe(method + '()', function () {
+		var fn = '' + method;
+
+		it('should answer with a slice until end of the string', function () {
+			expect(s[fn]('exceptional', 3)).to.be.equal('eptional');
+		});
+
+		it('should answer with a slice from start of the string', function () {
+			expect(s[fn]('exceptional', 0, -2)).to.be.equal('exception');
+		});
+
+		it('should answer with a slice inside of the string', function () {
+			expect(s[fn]('exceptional', 1, -2)).to.be.equal('xception');
+		});
+
+		it('should throw exception if slice length is zero', function () {
+			var doit = function () {
+				s[fn]('exceptional', 2, 2);
+			};
+
+			expect(doit).to.throw(RangeError);
+			expect(doit).to.throw('slice endpoints return nothing from the string');
+		});
+
+		it('should throw exception if starts outside the length of the string', function () {
+			var doit = function () {
+				s[fn]('exceptional', 11, -2);
+			};
+
+			expect(doit).to.throw(RangeError);
+			expect(doit).to.throw('beginSlice position is outside the string: 11');
+		});
+
+		it('should throw exception if starts outside the length of the string, ' +
+				'negative', function () {
+			var doit = function () {
+				s[fn]('exceptional', -12, -2);
+			};
+
+			expect(doit).to.throw(RangeError);
+			expect(doit).to.throw('beginSlice position is outside the string: -12');
+		});
+
+		it('should throw exception if ends outside the length of the string', function () {
+			var doit = function () {
+				s[fn]('exceptional', 2, 11);
+			};
+
+			expect(doit).to.throw(RangeError);
+			expect(doit).to.throw('endSlice position is outside the string: 11');
+		});
+
+		it('should throw exception if ends outside the length of the string, ' +
+				'negative', function () {
+			var doit = function () {
+				s[fn]('exceptional', 2, -12);
+			};
+
+			expect(doit).to.throw(RangeError);
+			expect(doit).to.throw('endSlice position is outside the string: -12');
+		});
+
+		it('should throw exception if start is after end position', function () {
+			var doit = function () {
+				s[fn]('exceptional', 5, 2);
+			};
+
+			expect(doit).to.throw(RangeError);
+			expect(doit).to.throw('slice endpoints return nothing from the string');
+		});
+
+		it('should throw exception if start is after end position, negative', function () {
+			var doit = function () {
+				s[fn]('exceptional', 2, -10);
+			};
+
+			expect(doit).to.throw(RangeError);
+			expect(doit).to.throw('slice endpoints return nothing from the string');
+		});
+
+		it('should throw exception if start is after end position, both negative', function () {
+			var doit = function () {
+				s[fn]('exceptional', -4, -6);
+			};
+
+			expect(doit).to.throw(RangeError);
+			expect(doit).to.throw('slice endpoints return nothing from the string');
+		});
+
+	});
+
 });
