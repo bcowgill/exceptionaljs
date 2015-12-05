@@ -1,0 +1,40 @@
+{
+  "private": true,
+  "name": "exceptionaljs",
+  "version": "1.0.0",
+  "description": "Make your core Javascript methods throw exceptions instead of error codes as suggested in Clean Code by Robert C. Martin.",
+  "main": "lib/exceptional.js",
+  "scripts": {
+    "postinstall": "ln -s ../../config/pre-commit .git/hooks/pre-commit; grunt",
+    "test": "grunt coverage",
+    "pretest": "grunt check",
+    "debugtest": "export NODE_DEBUG=module; DEBUG=* grunt coverage",
+    "debuggertest": "DEBUG=* node-debug _mocha test/setup.js test/app/Life.spec.js",
+    "covereach": "for plan in `find test/app/ -name *.spec.js`; do echo === $plan ===================================; rm -rf doc/coverage/*; grunt coverage --plan $plan; done",
+    "coverage-view": "chromium-browser doc/coverage/index.html",
+    "edit": "subl Gruntfile.js package.json README.md `find lib/ test/ -type f`"
+  },
+  "author": "Brent Cowgill",
+  "license": "Unlicense",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bcowgill/exceptionaljs"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "chai": "^3.2.0",
+    "grunt": "~0.4.5",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-mocha-chai-sinon": "0.0.8",
+    "grunt-mocha-istanbul": "^3.0.1",
+    "istanbul": "^0.3.20",
+    "jshint": "^2.8.0",
+    "jshint-stylish": "^2.0.1",
+    "mocha": "^2.3.2",
+    "sinon": "^1.16.1",
+    "sinon-chai": "^2.8.0"
+  }
+}
