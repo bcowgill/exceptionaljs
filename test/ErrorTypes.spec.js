@@ -131,6 +131,18 @@ describe('RangeError - for numbers out of range', function () {
         });
     });
 
+    describe('throw()', function () {
+        it('should throw a RangeError with useful messages', function () {
+            expect(re.throw).withParams('plugh', 'a finite number').to.throw(RangeError);
+            expect(re.throw).withParams('plugh', 'a finite number')
+                .to.throw('argument <plugh> must be a finite number');
+            expect(re.throw).withParams('plugh', 'a finite number', 'index')
+                .to.throw('index argument <plugh> must be a finite number');
+            expect(re.throw).withParams('plugh', 'a finite number', 'index', 'method')
+                .to.throw('method() index argument <plugh> must be a finite number');
+        });
+    });
+
     describe('throwIfInvalid()', function () {
         var fnTest = re.throwIfInvalid;
 
