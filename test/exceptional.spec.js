@@ -1,11 +1,7 @@
-// js-exceptions-test.js
+// exceptional.spec.js
 'use strict';
-/*global describe, it */
 
-var chai = require('chai'),
-//	should = chai.should(),
-	expect = chai.expect,
-	ex = require('../lib/exceptional').exceptional,
+var	ex = require('../lib/exceptional').exceptional,
 	s = ex.String;
 
 describe('augment()', function () {
@@ -15,39 +11,27 @@ describe('augment()', function () {
 	});
 
 	it('should throw error if type to augment is not present', function () {
-		var fnTest = function () {
-			ex.augment('nopet');
-		};
-
-		expect(fnTest).to.throw(TypeError);
-		expect(fnTest).to.throw('cannot augment nopet.prototype');
+		expect(ex.augment).withParams('nopet').to.throw(TypeError);
+		expect(ex.augment).withParams('nopet')
+				.to.throw('cannot augment nopet.prototype');
 	});
 
 	it('should throw error if type to unaugment is not present', function () {
-		var fnTest = function () {
-			ex.unaugment('nopet');
-		};
-
-		expect(fnTest).to.throw(TypeError);
-		expect(fnTest).to.throw('cannot unaugment nopet.prototype');
+		expect(ex.unaugment).withParams('nopet').to.throw(TypeError);
+		expect(ex.unaugment).withParams('nopet')
+				.to.throw('cannot unaugment nopet.prototype');
 	});
 
 	it('should throw error if type to augment is not a sub-object', function () {
-		var fnTest = function () {
-			ex.augment('augment');
-		};
-
-		expect(fnTest).to.throw(TypeError);
-		expect(fnTest).to.throw('cannot augment augment.prototype');
+		expect(ex.augment).withParams('augment').to.throw(TypeError);
+		expect(ex.augment).withParams('augment')
+				.to.throw('cannot augment augment.prototype');
 	});
 
 	it('should throw error if type to unaugment is not a sub-object', function () {
-		var fnTest = function () {
-			ex.unaugment('augment');
-		};
-
-		expect(fnTest).to.throw(TypeError);
-		expect(fnTest).to.throw('cannot unaugment augment.prototype');
+		expect(ex.unaugment).withParams('augment').to.throw(TypeError);
+		expect(ex.unaugment).withParams('augment')
+				.to.throw('cannot unaugment augment.prototype');
 	});
 
 	it('should augment the string prototype', function () {
@@ -66,15 +50,12 @@ describe('augment()', function () {
 	});
 
 	it('should throw if augmentation would overwrite existing method', function () {
+		ex.augment('String');
 
-		var fnTest = function () {
-			ex.augment('String');
-		};
-		fnTest();
-
-		expect(fnTest).to.throw(TypeError);
-		expect(fnTest).to.throw('cannot augment String.prototype with method ' +
-				'charAtEx as that would overwrite an existing method');
+		expect(ex.augment).withParams('String').to.throw(TypeError);
+		expect(ex.augment).withParams('String')
+				.to.throw('cannot augment String.prototype with method ' +
+					'charAtEx as that would overwrite an existing method');
 	});
 
 	it('should be able to invoke method from a String object', function () {
@@ -106,7 +87,7 @@ describe('String methods', function () {
 
 			expect(function () {
 				s[fn]('exceptional', -1);
-			}).to.throw('position given is outside the string: -1');
+			}).to.throw('charAtEx() index argument <-1> must be between 0 and 10');
 		});
 
 		it('should throw exception if past end of string', function () {
@@ -116,7 +97,7 @@ describe('String methods', function () {
 
 			expect(function () {
 				s[fn]('', 1);
-			}).to.throw('position given is outside the string: 1');
+			}).to.throw('charAtEx() index argument <1> must be between 0 and 0');
 		});
 	});
 
@@ -134,7 +115,7 @@ describe('String methods', function () {
 			};
 
 			expect(doit).to.throw(RangeError);
-			expect(doit).to.throw('position given is outside the string: -1');
+			expect(doit).to.throw('charCodeAtEx() index argument <-1> must be between 0 and 10');
 		});
 
 		it('should throw exception if past end of string', function () {
@@ -143,7 +124,7 @@ describe('String methods', function () {
 			};
 
 			expect(doit).to.throw(RangeError);
-			expect(doit).to.throw('position given is outside the string: 1');
+			expect(doit).to.throw('charCodeAtEx() index argument <1> must be between 0 and 0');
 		});
 	});
 
@@ -349,7 +330,219 @@ describe('String methods', function () {
 			expect(doit).to.throw(RangeError);
 			expect(doit).to.throw('slice endpoints return nothing from the string');
 		});
-
 	});
 
+	method = 'split';
+	describe(method + '()', function () {
+		var fn = '' + method;
+
+		it('should answer with an array of characters if given empty split pattern', function () {
+			expect(s[fn]('exceptional', '')).to.be.deep.equal([
+				'e', 'x', 'c', 'e', 'p', 't', 'i', 'o', 'n', 'a', 'l'
+			]);
+		});
+
+		it('should answer with a limited array of characters if given empty ' +
+				'split pattern', function () {
+			expect(s[fn]('exceptional', '', 5)).to.be.deep.equal([
+				'e', 'x', 'c', 'e', 'p'
+			]);
+		});
+
+		it('should answer with one value only if you specify a limit', function () {
+			expect(s[fn]('exceptional', '', 1)).to.be.deep.equal([
+				'e'
+			]);
+		});
+
+		it('should throw an error if there is nothing to split', function () {
+			var doit = function () {
+				s[fn]('');
+			};
+
+			expect(doit).to.throw(RangeError);
+			expect(doit).to.throw('split separator not found in string: undefined');
+		});
+
+		it('should throw an error if there is no split pattern in the string', function () {
+			var doit = function () {
+				s[fn]('only one entry', /\s*,\s*/);
+			};
+
+			expect(doit).to.throw(RangeError);
+			expect(doit).to.throw('split separator not found in string: /\\s*,\\s*/');
+		});
+	});
+
+	method = 'substr';
+	describe(method + '()', function () {
+		var fn = '' + method;
+
+		it('should answer with a substr until end of the string', function () {
+			expect(s[fn]('exceptional', 3)).to.be.equal('eptional');
+		});
+
+		it('should answer with a substr from start of the string', function () {
+			expect(s[fn]('exceptional', 0, 9)).to.be.equal('exception');
+		});
+
+		it('should answer with a substr inside of the string', function () {
+			expect(s[fn]('exceptional', 1, 8)).to.be.equal('xception');
+		});
+
+		it('should answer with a substr from the end of the string', function () {
+			expect(s[fn]('exceptional', -3, 2)).to.be.equal('na');
+		});
+
+		it('should throw exception if starts outside the length of the string', function () {
+			var doit = function () {
+				s[fn]('exceptional', 11, -2);
+			};
+
+			expect(doit).to.throw(RangeError);
+			expect(doit).to.throw('start position is outside the string: 11');
+		});
+
+		it('should throw exception if starts outside the length of the string, ' +
+				'negative', function () {
+			var doit = function () {
+				s[fn]('exceptional', -12, -2);
+			};
+
+			expect(doit).to.throw(RangeError);
+			expect(doit).to.throw('start position is outside the string: -12');
+		});
+
+		it('should throw exception if ends outside the length of the string', function () {
+			var doit = function () {
+				s[fn]('exceptional', 2, 11);
+			};
+
+			expect(doit).to.throw(RangeError);
+			expect(doit).to.throw('start and length combination lie outside the string: 2, 11');
+		});
+
+		it('should throw exception if ends outside the length of the string from end', function () {
+			var doit = function () {
+				s[fn]('exceptional', -2, 8);
+			};
+
+			expect(doit).to.throw(RangeError);
+			expect(doit).to.throw('start and length combination lie outside the string: -2, 8');
+		});
+
+		it('should throw exception if length is zero', function () {
+			var doit = function () {
+				s[fn]('exceptional', 2, 0);
+			};
+
+			expect(doit).to.throw(RangeError);
+			expect(doit).to.throw('length cannot be less than one: 0');
+		});
+
+		it('should throw exception if length is negative', function () {
+			var doit = function () {
+				s[fn]('exceptional', 2, -6);
+			};
+
+			expect(doit).to.throw(RangeError);
+			expect(doit).to.throw('length cannot be less than one: -6');
+		});
+	});
+
+	method = 'substring';
+	describe(method + '()', function () {
+		var fn = '' + method;
+
+		it('should answer with a substring until end of the string', function () {
+			expect(s[fn]('exceptional', 3)).to.be.equal('eptional');
+		});
+
+		it('should answer with a substring from start of the string', function () {
+			expect(s[fn]('exceptional', 0, 9)).to.be.equal('exception');
+		});
+
+		it('should answer with a substring from start of the string ' +
+				'start > end is ok', function () {
+			expect(s[fn]('exceptional', 9, 0)).to.be.equal('exception');
+		});
+
+		it('should answer with a substring inside of the string', function () {
+			expect(s[fn]('exceptional', 1, 9)).to.be.equal('xception');
+		});
+
+		it('should answer with a substring including the whole string', function () {
+			expect(s[fn]('exceptional', 0, 11)).to.be.equal('exceptional');
+		});
+
+		it('should throw exception if substring length is zero', function () {
+			var doit = function () {
+				s[fn]('exceptional', 2, 2);
+			};
+
+			expect(doit).to.throw(ReferenceError);
+			expect(doit).to.throw('substringEx() beginIndex and endIndex ' +
+					'get nothing from the string');
+		});
+
+		it('should throw exception if starts outside the length of the string', function () {
+			var doit = function () {
+				s[fn]('exceptional', 11, 12);
+			};
+
+			expect(doit).to.throw(RangeError);
+			expect(doit).to.throw('substringEx() beginIndex argument <11> ' +
+				'must be between 0 and 10');
+		});
+
+		it('should throw exception if starts outside the length of the string, ' +
+				'negative', function () {
+			var doit = function () {
+				s[fn]('exceptional', -12, 2);
+			};
+
+			expect(doit).to.throw(RangeError);
+			expect(doit).to.throw('substringEx() beginIndex argument <-12> ' +
+				'must be between 0 and 10');
+		});
+
+		it('should throw exception if ends outside the length of the string', function () {
+			var doit = function () {
+				s[fn]('exceptional', 2, 12);
+			};
+
+			expect(doit).to.throw(RangeError);
+			expect(doit).to.throw('substringEx() endIndex argument <12> must be between 0 and 11');
+		});
+
+		it('should throw exception if ends outside the length of the string, ' +
+				'negative', function () {
+			var doit = function () {
+				s[fn]('exceptional', 2, -12);
+			};
+
+			expect(doit).to.throw(RangeError);
+			expect(doit).to.throw('substringEx() endIndex argument <-12> must be between 0 and 11');
+		});
+
+		it('should throw exception if start is after end position, negative', function () {
+			var doit = function () {
+				s[fn]('exceptional', 2, -10);
+			};
+
+			expect(doit).to.throw(RangeError);
+			expect(doit).to.throw('substringEx() endIndex argument <-10> must be between 0 and 11');
+		});
+
+		it('should throw exception if start is after end position, both negative', function () {
+			var doit = function () {
+				s[fn]('exceptional', -4, -6);
+			};
+
+			expect(doit).to.throw(RangeError);
+			expect(doit).to.throw('substringEx() beginIndex argument <-4> ' +
+				'must be between 0 and 10');
+		});
+
+	});
 });
