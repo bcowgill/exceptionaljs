@@ -20,7 +20,9 @@
     "type": "git",
     "url": "https://github.com/bcowgill/exceptionaljs"
   },
-  "dependencies": {},
+  "dependencies": {
+    "debug": "^2.2.0"
+  },
   "devDependencies": {
     "chai": "^3.2.0",
     "chai-catch-exception": "^1.0.0",

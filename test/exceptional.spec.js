@@ -1,5 +1,6 @@
 // exceptional.spec.js
 'use strict';
+/* global parseFloatEx */
 
 var	ex = require('../lib/exceptional').exceptional;
 
@@ -68,4 +69,17 @@ describe('augment()', function () {
 
 		expect('exception'.charAtEx(1)).to.be.equal('x');
 	});
+
+	it('should be able to augment and invoke method from global object', function () {
+		ex.augment('window');
+
+		expect(parseFloatEx('12.34')).to.be.equal(12.34);
+	});
+
+	it('should be able to augment and invoke method from Math object', function () {
+		ex.augment('Math');
+
+		expect(Math.acosEx(1)).to.be.equal(0);
+	});
+
 });
