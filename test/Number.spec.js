@@ -1,10 +1,10 @@
-// Number.spec.js
+// global.spec.js
 'use strict';
 
 var	ex = require('../lib/exceptional').exceptional,
-	n = ex.Number;
+	n = ex.global;
 
-describe('Number methods', function () {
+describe('global methods', function () {
 	var method = 'parseFloat';
 	describe(method + '()', function () {
 		var fnTest = n['' + method];
