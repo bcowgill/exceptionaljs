@@ -50,6 +50,9 @@ describe('URIError - when a URI function is used wrong', function () {
 
 describe('TypeError - when parameter or operand is not of the expected ' +
     'type for a function or operator', function () {
+
+    var te = ex.TypeError;
+
     describe('thrown by javascript functions', function () {
         it('should throw a TypeError for no property', function () {
             expect(eval).withParams('null.f()').to.throw(TypeError);
@@ -67,6 +70,18 @@ describe('TypeError - when parameter or operand is not of the expected ' +
             expect(eval).withParams('"w" in "42"').to.throw(TypeError);
             expect(eval).withParams('"w" in "42"')
                 .to.throw('Cannot use \'in\' operator to search for \'w\' in 42');
+        });
+    });
+
+    describe('throw()', function () {
+        it('should throw a TypeError with useful messages', function () {
+            expect(te.throw).withParams('plugh', 'a number').to.throw(TypeError);
+            expect(te.throw).withParams('plugh', 'a number')
+                .to.throw('argument <plugh> must be a number');
+            expect(te.throw).withParams('plugh', 'a number', 'index')
+                .to.throw('index argument <plugh> must be a number');
+            expect(te.throw).withParams('plugh', 'a number', 'index', 'method')
+                .to.throw('method() index argument <plugh> must be a number');
         });
     });
 });
