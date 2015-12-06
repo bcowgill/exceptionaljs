@@ -11,6 +11,7 @@
 
 global.chai = require('chai');
 global.chai.use(require('sinon-chai'));
+global.chai.use(require('chai-catch-exception'));
 
 global.should = chai.should();
 global.expect = chai.expect;
