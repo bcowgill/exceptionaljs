@@ -231,4 +231,6 @@ describe('RangeError - for numbers out of range', function () {
 
     });
 
+    // TODO throwIfNotGreaterThan tests
+
 });

@@ -82,4 +82,6 @@ describe('augment()', function () {
 		expect(Math.acosEx(1)).to.be.equal(0);
 	});
 
+	// Todo TypeError.throw, etc
+
 });
