@@ -76,12 +76,17 @@ describe('augment()', function () {
 		expect(parseFloatEx('12.34')).to.be.equal(12.34);
 	});
 
+	it('should be able to unaugment window object', function () {
+		ex.augment('window');
+		expect(typeof parseFloatEx).to.be.equal('function');
+		ex.unaugment('window');
+		expect(typeof parseFloatEx).to.be.equal('undefined');
+	});
+
 	it('should be able to augment and invoke method from Math object', function () {
 		ex.augment('Math');
 
 		expect(Math.acosEx(1)).to.be.equal(0);
 	});
-
-	// Todo TypeError.throw, etc
 
 });

@@ -231,6 +231,48 @@ describe('RangeError - for numbers out of range', function () {
 
     });
 
-    // TODO throwIfNotGreaterThan tests
+    describe('throwIfNotGreaterThan()', function () {
+        var fnTest = re.throwIfNotGreaterThan;
 
+        it('should not throw for a number which is large enough', function () {
+            expect(fnTest).withParams(0, -0.001).to.equal(0);
+        });
+
+        it('should throw RangeError for invalid numbers', function () {
+            expect(fnTest).withParams(NaN).to.throw(RangeError);
+        });
+
+        it('should throw TypeError for non numbers', function () {
+            expect(fnTest).withParams(void 0, 'digits', 'method').to.throw(TypeError);
+            expect(fnTest).withParams(null, 'digits', 'method').to.throw(TypeError);
+            expect(fnTest).withParams(false, 'digits', 'method').to.throw(TypeError);
+            expect(fnTest).withParams(true, 'digits', 'method').to.throw(TypeError);
+            expect(fnTest).withParams('', 'digits', 'method').to.throw(TypeError);
+            expect(fnTest).withParams('42', 'digits', 'method').to.throw(TypeError);
+            expect(fnTest).withParams([], 'digits', 'method').to.throw(TypeError);
+            expect(fnTest).withParams({}, 'digits', 'method').to.throw(TypeError);
+            expect(fnTest).withParams(/[0-9]+/g, 'digits', 'method')
+                .to.throw(TypeError);
+            expect(fnTest).withParams(function () {}, 'digits', 'method')
+                .to.throw(TypeError);
+        });
+
+        it('should throw RangeError when equals the floor', function () {
+            expect(fnTest).withParams(0, 0).to.throw(RangeError);
+        });
+
+        it('should throw RangeError when less than the floor', function () {
+            expect(fnTest).withParams(0, 0.0001).to.throw(RangeError);
+        });
+
+        it('should throw with useful messages', function () {
+            expect(fnTest).withParams(0, 0)
+                .to.throw('argument <0> must be greater than 0');
+            expect(fnTest).withParams(0, 0, 'digits')
+                .to.throw('digits argument <0> must be greater than 0');
+            expect(fnTest).withParams(0, 0, 'digits', 'method')
+                .to.throw('method() digits argument <0> must be greater than 0');
+        });
+
+    });
 });
