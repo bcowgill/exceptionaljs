@@ -21,7 +21,8 @@
     "url": "https://github.com/bcowgill/exceptionaljs"
   },
   "dependencies": {
-    "debug": "^2.2.0"
+    "debug": "^2.2.0",
+    "extended-exceptions": "^2.1.0"
   },
   "devDependencies": {
     "chai": "^3.2.0",

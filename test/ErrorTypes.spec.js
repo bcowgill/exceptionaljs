@@ -1,7 +1,18 @@
 // ErrorTypes.spec.js
 'use strict';
 
-var ex = require('../lib/exceptional').exceptional;
+var ex = require('../lib/exceptional').exceptional,
+    swallow = function (fn) {
+        /* jshint maxcomplexity: 2 */
+        var result;
+        try {
+            result = fn();
+        }
+        catch (err) {
+            result = err;
+        }
+        return result;
+    };
 
 // EvalError never thrown in modern javascripts
 
@@ -84,6 +95,30 @@ describe('TypeError - when parameter or operand is not of the expected ' +
                 .to.throw('method() index argument <plugh> must be a number');
         });
     });
+});
+
+describe('InvalidState - for state machines in an invalid state' +
+    ' (because I do not like the idea of an Illegal State)', function () {
+
+    var Ise = ex.InvalidState;
+
+    it('should throw an InvalidState', function () {
+        var fnTest = function (state) {
+            Ise.throw(state);
+        };
+        expect(fnTest).withParams('not-valid').to.throw(Ise);
+        expect(fnTest).withParams('not-valid')
+            .to.throw('InvalidState: state <not-valid> is not an allowed state');
+    });
+
+    it('should have stateName property when using InvalidState.throw()', function () {
+        var fnTest = function () {
+            Ise.throw('not-bad', ['good', 'bad']);
+        }, result = swallow(fnTest);
+        expect(result.stateName).to.equal('not-bad');
+        expect(result.allowedStates).to.deep.equal(['good', 'bad']);
+    });
+
 });
 
 describe('RangeError - for numbers out of range', function () {
